@@ -1,0 +1,17 @@
+{
+  "name": "whether-weather-api",
+  "description": "API to support whether-weather-better",
+  "main": "app.js",
+  "author": "andygnewman",
+  "repository": "https://github.com/andygnewman/whether-weather-api",
+  "license": "MIT",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "6.11.2"
+  },
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
