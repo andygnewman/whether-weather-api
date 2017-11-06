@@ -1,7 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const getWeather = require('./src/get-weather');
 
 const port = process.env.PORT || 3000;
+
 
 const app = express();
 
