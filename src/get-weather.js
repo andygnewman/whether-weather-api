@@ -72,7 +72,21 @@ const getForecastWeather = (cityIds = Object.values(defaultCities)) => {
 };
 
 module.exports = (req) => {
-  return getForecastWeather()
-  .then(forecasts => console.log(forecasts));
-  // return getCurrentWeather();
+  const promises = [getCurrentWeather(), getForecastWeather()];
+  return Promise.all(promises)
+    .then(weather => {
+      const [currentWeather, forecastWeather] = weather;
+      const resultObject = {};
+      resultObject.forecastDates = forecastWeather.forecastDates;
+      resultObject.observations = [];
+      currentWeather.map(current => {
+        console.log('current: ', current);
+        current.forecasts = forecastWeather.forecasts.find(forecast => {
+          console.log('forecast: ', forecast);
+          return forecast.location === current.location
+        }).temps;
+        resultObject.observations.push(current);
+      });
+      return resultObject;
+    });
 };
