@@ -2,11 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const getWeather = require('./src/get-weather');
 const redis = require('redis');
+const redisURL = process.env.REDIS_URL;
 
 const port = process.env.PORT || 3000;
 
 const app = express();
-const client = redis.createClient();
+const client = redis.createClient(redisURL);
 
 const getCityIds = (req) => {
   const defaultCities = {
