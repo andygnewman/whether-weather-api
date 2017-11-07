@@ -80,9 +80,7 @@ module.exports = (req) => {
       resultObject.forecastDates = forecastWeather.forecastDates;
       resultObject.observations = [];
       currentWeather.map(current => {
-        console.log('current: ', current);
         current.forecasts = forecastWeather.forecasts.find(forecast => {
-          console.log('forecast: ', forecast);
           return forecast.location === current.location
         }).temps;
         resultObject.observations.push(current);
