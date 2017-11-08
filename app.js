@@ -7,6 +7,16 @@ const redisURL = process.env.REDIS_URL;
 const port = process.env.PORT || 3000;
 
 const app = express();
+//CORS middleware
+const allowCrossDomain = (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Methods', 'GET,POST');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  next();
+}
+app.use(allowCrossDomain);
+
 const client = redis.createClient(redisURL);
 
 const getCityIds = (req) => {
@@ -15,7 +25,7 @@ const getCityIds = (req) => {
     liverpool: 2644210,
     birmingham: 2655603
   };
-  return (req.query.ids && req.query.ids.split(','))|| Object.values(defaultCities);
+  return (req.query.ids && req.query.ids.split(',')) || Object.values(defaultCities);
 }
 
 const checkCache = (req, res, next) => {
