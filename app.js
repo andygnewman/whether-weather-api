@@ -21,9 +21,9 @@ const client = redis.createClient(redisURL);
 
 const getCityIds = (req) => {
   const defaultCities = {
-    dublin: 2964574,
-    liverpool: 2644210,
-    birmingham: 2655603
+    malahide: 2962725,
+    crosby: 3209584,
+    suttonColdfield: 2636486
   };
   return (req.query.ids && req.query.ids.split(',')) || Object.values(defaultCities);
 }
