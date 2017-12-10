@@ -18,7 +18,9 @@ const getCurrentWeather = (cityIds) => {
         return {
           location: item.name,
           current: {
-            temp: item.main.temp
+            temp: item.main.temp,
+            rain: (item.rain && item.rain["3h"]) || 0,
+            wind: (item.wind && item.wind.speed) || 0
           }
         };
       });
@@ -38,7 +40,9 @@ const getForecastWeather = (cityIds) => {
         .then(response => {
           const list = response.list;
           const location = response.city.name;
-          const temps = []
+          const temps = [];
+          const rains = [];
+          const winds = [];
           list.map((item, index) => {
             const forecastDate = new Date(item.dt_txt);
             if (forecastDate.getHours() === 12) {
@@ -46,11 +50,15 @@ const getForecastWeather = (cityIds) => {
                 forecastDates.push(forecastDate.toString());
               }
               temps.push(item.main.temp);
+              rains.push((item.rain && item.rain["3h"]) || 0);
+              winds.push((item.wind && item.wind.speed) || 0);
             }
           });
           return {
             location,
-            temps
+            temps,
+            rains,
+            winds
           };
         });
     };
@@ -76,7 +84,7 @@ module.exports = (cityIds) => {
       currentWeather.map(current => {
         current.forecasts = forecastWeather.forecasts.find(forecast => {
           return forecast.location === current.location
-        }).temps;
+        });
         resultObject.observations.push(current);
       });
       return resultObject;
