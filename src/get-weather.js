@@ -28,7 +28,6 @@ const getCurrentWeather = (cityIds) => {
 };
 
 const getForecastWeather = (cityIds) => {
-  const forecastDates = [];
   const promises = [];
   cityIds.map(city => {
     const promise = () => {
@@ -40,26 +39,26 @@ const getForecastWeather = (cityIds) => {
         .then(response => {
           const list = response.list;
           const location = response.city.name;
-          const temps = [];
-          const rains = [];
-          const winds = [];
-          list.map((item, index) => {
+          return list.reduce((acc, item) => {
             const forecastDate = new Date(item.dt_txt);
-            if (forecastDate.getHours() === 12) {
-              if (!forecastDates.includes(forecastDate.toString())) {
-                forecastDates.push(forecastDate.toString());
+            const date = `${forecastDate.getDate()}/${('0'+(forecastDate.getMonth() + 1)).slice(-2)}`;
+            if (!acc[date]) {
+              acc[date] = {
+                temp: false,
+                wind: 0,
+                precip: 0
               }
-              temps.push(item.main.temp);
-              rains.push((item.rain && item.rain["3h"]) || 0);
-              winds.push((item.wind && item.wind.speed) || 0);
             }
-          });
-          return {
-            location,
-            temps,
-            rains,
-            winds
-          };
+            if (!acc[date].temp || item.main.temp > acc[date].temp) {
+              acc[date].temp = item.main.temp;
+            }
+            if (item.wind && item.wind.speed > acc[date].wind) {
+              acc[date].wind = item.wind.speed;
+            }
+            if (item.rain && item.rain["3h"]) acc[date].precip += item.rain["3h"];
+            if (item.snow && item.snow["3h"]) acc[date].precip += item.snow["3h"];
+            return acc;
+          }, { location });
         });
     };
     promises.push(promise());
@@ -67,7 +66,6 @@ const getForecastWeather = (cityIds) => {
   return Promise.all(promises)
     .then(forecasts => {
       return {
-        forecastDates,
         forecasts
       }
     });
